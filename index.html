@@ -77,7 +77,7 @@
         <hr />
         <div id="all-local-stats">
           <div class="local-stat-item">
-            <h3>Jumlah permainan yang berhasil ditebak:</h3>
+            <h3>Jumlah permainan yang berhasil dimenangkan:</h3>
             <h3 id="local-total-victory-field"></h3>
           </div>
           <div class="local-stat-item">
@@ -96,22 +96,22 @@
           <button class="button" id="play-button">Bermain</button>
         </div>
         <div id="during-game-display" hidden>
-          <h3>Silakan menebak angka!</h3>
+          <h3>Silahkan menebak angka!</h3>
           <h3>Jawaban Anda:</h3>
           <h1>
             "<u><span id="session-user-answer-field"></span></u>"
           </h1>
-          <div class="answer-button" id="answer-1-button">1</div>
-          <div class="answer-button" id="answer-2-button">2</div>
-          <div class="answer-button" id="answer-3-button">3</div>
+          <button class="answer-button" id="answer-1-button">1</button>
+          <button class="answer-button" id="answer-2-button">2</button>
+          <button class="answer-button" id="answer-3-button">3</button>
           <h3>"<span id="session-user-wrong-answer-field"></span>" bukanlah jawabannya...</h3>
           <br /><br />
         </div>
-        <div id="after-game-play" hidden>
+        <div id="after-game-display" hidden>
           <h3>Selamat Tebakan Anda benar!</h3>
           <h3>Jawabannya adalah:</h3>
           <h1>"<span id="session-true-answer-field"></span>"</h1>
-          <h3><i>Refresh halaman ini untuk mencoba lagi</i></h3>
+          <h3><i></i>Refresh halaman ini untuk mencoba lagi</h3>
         </div>
       </div>
 
@@ -131,9 +131,10 @@
         <hr />
         <h3 align="center">Selamat datang ke permainan tebak angka, berikut instruksi-nya:</h3>
         <ul id="instructions-list" align="left">
-          <li>Anda harus mencari kombinasi angka yang terdiri dari angka "1", "2", dan "3", misalnya "231" dan "123"</li>
-          <li>Angka yang ditebak hanya memiliki panjang 3 karakter saja, sehingga kombinasi seperti "223" maupun "111" tidak akan menjadi jawaban.</li>
-          <li><i>Have fun and dont cheat!</i></li>
+          <li>Anda harus mencari kombinasi angka yang terdiri dari angka "1", "2", dan "3", misalnya "231" dan "123".</li>
+          <li>Angka yang ditebak hanya memiliki panjang 3 karakter saja, sehingga kombinasi seperti "1231" tidak akan menjadi jawaban.</li>
+          <li>Sebuah angka hanya akan muncul sekali dan hanya sekali, sehingga kombinasi seperti "223" maupun "111" tidak akan menjadi jawaban.</li>
+          <li><i>Have fun and don't cheat!</i></li>
         </ul>
       </div>
     </div>
@@ -155,7 +156,7 @@
       const sessionTrueAnswerField = document.getElementById("session-true-answer-field");
       const sessionUserAttemptsField = document.getElementById("session-user-attempts-amount-field");
 
-      // inisialisasi fungsi untuk menghasilkan jawaban permainan
+      //inisialisasi fungsi untuk menghasilkan jawaban permainan
       function getAnswer() {
         let answer = "123".split("");
         for (let i = 0; i < answer.length; i++) {
@@ -167,19 +168,19 @@
         return answer.join("");
       }
 
-      //   inisialisasi key untuk session storage
+      //inisialiasi key untuk session storage
       const sessionAnswerKey = "SESSION_ANSWER";
       const sessionUserAttemptsKey = "SESSION_USER_ATTEMPTS";
       const sessionUserIsPlayingKey = "SESSION_USER_IS_PLAYING";
 
-      //   inisialisasi key untuk local storage
+      //inisialisasi key untuk local storage
       const localTotalVictoryKey = "LOCAL_TOTAL_VICTORIES_PLAYED";
       const localMaximumAttemptsKey = "LOCAL_MAXIMUM_ATTEMPTS";
 
       window.addEventListener("load", function () {
         if (typeof Storage !== "undefined") {
           // (MATERI 1)
-          // inisialisasi semua item web storage yang kita akan gunakan jika belum ada
+          // inisiliasi semua item web storage yang kita akan gunakan jika belum ada
           if (sessionStorage.getItem(sessionAnswerKey) === null) {
             sessionStorage.setItem(sessionAnswerKey, "");
           }
@@ -195,14 +196,13 @@
         } else {
           alert("Browser yang Anda gunakan tidak mendukung Web Storage");
         }
-        //inisialisasi semua nilai field pada dokumen yang menggunakan nilai dari web storage
+        // inisialiasi semua nilai field pada dokumen yang menggunakan nilai dari web storage
         sessionUserAttemptsField.innerText = sessionStorage.getItem(sessionUserAttemptsKey);
         localTotalVictoryField.innerText = localStorage.getItem(localTotalVictoryKey);
         localMaximumAttemptField.innerText = localStorage.getItem(localMaximumAttemptsKey);
       });
 
-      // materi 3
-
+      // (MATERI 3)
       playButton.addEventListener("click", function () {
         sessionStorage.setItem(sessionAnswerKey, getAnswer());
         beforeGameDisplay.setAttribute("hidden", true);
@@ -212,7 +212,7 @@
       answerButton1.addEventListener("click", function () {
         sessionUserAnswerField.innerText += "1";
         if (sessionUserAnswerField.innerText.length == 3) {
-          checkAnswer(sessionUserAnswerField);
+          checkAnswer(sessionUserAnswerField.innerText);
         }
       });
 
@@ -253,13 +253,13 @@
           localStorage.setItem(localMaximumAttemptsKey, sessionAttemptsValue);
           localMaximumAttemptField.innerText = sessionAttemptsValue;
         }
-        const previousTotalVictoruAmount = parseInt(localStorage.getItem(localTotalVictoryKey));
-        localStorage.setItem(localTotalVictoryKey, previousTotalVictoruAmount + 1);
+        const previousTotalVictoryAmount = parseInt(localStorage.getItem(localTotalVictoryKey));
+        localStorage.setItem(localTotalVictoryKey, previousTotalVictoryAmount + 1);
         localTotalVictoryField.innerText = localStorage.getItem(localTotalVictoryKey);
       }
 
       window.addEventListener("beforeunload", function () {
-        sessionTrueAnswerField.innerText = "";
+        sessionUserAnswerField.innerText = "";
         sessionUserWrongAnswerField.innerText = "";
         sessionStorage.setItem(sessionUserAttemptsKey, 0);
         sessionUserAttemptsField.innerText = sessionStorage.getItem(sessionUserAttemptsKey);
